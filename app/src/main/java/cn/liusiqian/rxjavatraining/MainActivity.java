@@ -1,7 +1,6 @@
 package cn.liusiqian.rxjavatraining;
 
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.content.Intent;
 import android.util.Log;
 
 import io.reactivex.Observable;
@@ -11,21 +10,19 @@ import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 
-public class MainActivity extends AppCompatActivity
-{
-    private static final String TAG = "RxJavaTag";
+public class MainActivity extends BaseActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    protected void goNext() {
+        Intent intent = new Intent(this, SecondActivity.class);
+        startActivity(intent);
+    }
 
-        Observable.create(new ObservableOnSubscribe<String>()
-        {
+    @Override
+    protected void triggerRx() {
+        Observable.create(new ObservableOnSubscribe<String>() {
             @Override
-            public void subscribe(@NonNull ObservableEmitter<String> e) throws Exception
-            {
+            public void subscribe(@NonNull ObservableEmitter<String> e) throws Exception {
                 Log.i(TAG, "subscribe start");
                 e.onNext("String 1");
                 Log.i(TAG, "subscribe 1");
@@ -39,37 +36,35 @@ public class MainActivity extends AppCompatActivity
 //                e.onError(new RuntimeException("custom exception"));
 //                throw new NullPointerException("custom exception duplicated");
             }
-        }).subscribe(new Observer<String>()
-        {
+        }).subscribe(new Observer<String>() {
             private Disposable mDisposable;
 
             @Override
-            public void onSubscribe(@NonNull Disposable d)
-            {
+            public void onSubscribe(@NonNull Disposable d) {
                 mDisposable = d;
                 Log.i(TAG, "onSubscribe");
-                Log.i(TAG, "onSubscribe Thread:"+Thread.currentThread().getName());
+                Log.i(TAG, "onSubscribe Thread:" + Thread.currentThread().getName());
             }
 
             @Override
-            public void onNext(@NonNull String s)
-            {
+            public void onNext(@NonNull String s) {
                 Log.i(TAG, "onNext --- " + s);
-                Log.i(TAG, "onNext Thread:"+Thread.currentThread().getName());
+                Log.i(TAG, "onNext Thread:" + Thread.currentThread().getName());
+                if (s.contains("String 2")) {
+                    mDisposable.dispose();
+                }
             }
 
             @Override
-            public void onError(@NonNull Throwable e)
-            {
+            public void onError(@NonNull Throwable e) {
                 Log.i(TAG, "onError --- " + e.getMessage() + "  isDisposed:" + mDisposable.isDisposed());
-                Log.i(TAG, "onError Thread:"+Thread.currentThread().getName());
+                Log.i(TAG, "onError Thread:" + Thread.currentThread().getName());
             }
 
             @Override
-            public void onComplete()
-            {
+            public void onComplete() {
                 Log.i(TAG, "onComplete  isDisposed:" + mDisposable.isDisposed());
-                Log.i(TAG, "onComplete Thread:"+Thread.currentThread().getName());
+                Log.i(TAG, "onComplete Thread:" + Thread.currentThread().getName());
             }
         });
     }

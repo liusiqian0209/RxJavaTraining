@@ -1,6 +1,5 @@
 package cn.liusiqian.rxjavatraining;
 
-import android.content.Intent;
 import android.util.Log;
 
 import io.reactivex.Observable;
@@ -11,37 +10,24 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 /**
- * Created by liusiqian on 2017/12/7.
+ * Created by liusiqian on 2017/12/11.
  */
 
-public class SecondActivity extends BaseActivity {
-
+public class ThirdActivity extends BaseActivity {
     @Override
     protected void goNext() {
-        Intent intent = new Intent(this,ThirdActivity.class);
-        startActivity(intent);
+
     }
-
-    /*
-     *多次指定上游的线程只有第一次指定的有效, 也就是说多次调用subscribeOn() 只有第一次的有效, 其余的会被忽略.
-     *多次指定下游的线程是可以的, 也就是说每调用一次observeOn() , 下游的线程就会切换一次.
-     *
-     * 仅有subscribeOn时，后续的onNext也会被切换到指定的线程上
-     * subscribeOn影响前面，observeOn影响后面
-     */
-
-    /*
-        Schedulers.io() 代表io操作的线程, 通常用于网络,读写文件等io密集型的操作
-        Schedulers.computation() 代表CPU计算密集型的操作, 例如需要大量计算的操作
-        Schedulers.newThread() 代表一个常规的新线程
-        AndroidSchedulers.mainThread() 代表Android的主线程
-     */
 
     @Override
     protected void triggerRx() {
+        /*
+         * map的作用就是对上游发送的每一个事件应用一个函数, 使得每一个事件都按照指定的函数去变化
+         */
         Observable.create(new ObservableOnSubscribe<String>() {
             @Override
             public void subscribe(@NonNull ObservableEmitter<String> e) throws Exception {
@@ -56,8 +42,6 @@ public class SecondActivity extends BaseActivity {
                 e.onNext("String 4");
                 Log.i(TAG, "subscribe 4");
                 e.onComplete();
-//                e.onError(new RuntimeException("custom exception"));
-//                throw new NullPointerException("custom exception duplicated");
             }
         }).subscribeOn(Schedulers.newThread())
                 .observeOn(Schedulers.computation())
@@ -66,10 +50,15 @@ public class SecondActivity extends BaseActivity {
                     public void accept(String s) throws Exception {
                         Log.i(TAG, "doOnNext---accept  s = " + s);
                         Log.i(TAG, "doOnNext---accept Thread:" + Thread.currentThread().getName());
-                        Thread.sleep(1000);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
+                .map(new Function<String, String>() {
+                    @Override
+                    public String apply(String s) throws Exception {
+                        return "This is event "+ s;
+                    }
+                })
                 .subscribe(new Observer<String>() {
                     private Disposable mDisposable;
 
@@ -102,11 +91,12 @@ public class SecondActivity extends BaseActivity {
 
     @Override
     protected CharSequence setNextText() {
-        return "To Third";
+        return "To Fourth";
     }
 
     @Override
     protected CharSequence setTriggetText() {
-        return "Trigger Rx-async";
+        return "Trigger Rx-operator";
     }
+
 }

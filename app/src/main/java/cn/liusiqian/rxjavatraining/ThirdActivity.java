@@ -1,5 +1,6 @@
 package cn.liusiqian.rxjavatraining;
 
+import android.content.Intent;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -25,7 +26,8 @@ import io.reactivex.schedulers.Schedulers;
 public class ThirdActivity extends BaseActivity {
     @Override
     protected void goNext() {
-
+        Intent intent = new Intent(this, FourthActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -66,7 +68,7 @@ public class ThirdActivity extends BaseActivity {
                 .map(new Function<String, String>() {
                     @Override
                     public String apply(String s) throws Exception {
-                        return "This is event "+ s;
+                        return "This is event " + s;
                     }
                 })
                 .flatMap(new Function<String, ObservableSource<String>>() {

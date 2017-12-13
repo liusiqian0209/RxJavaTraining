@@ -2,9 +2,14 @@ package cn.liusiqian.rxjavatraining;
 
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
@@ -27,6 +32,11 @@ public class ThirdActivity extends BaseActivity {
     protected void triggerRx() {
         /*
          * map的作用就是对上游发送的每一个事件应用一个函数, 使得每一个事件都按照指定的函数去变化
+         *
+         * FlatMap将一个发送事件的上游Observable变换为多个发送事件的Observables，然后将它们发射的事件合并后放进一个单独的Observable里
+         * FlatMap不保证事件的顺序
+         *
+         * concatMap和flatMap的作用几乎一模一样, 只是它的结果是严格按照上游发送的顺序来发送的
          */
         Observable.create(new ObservableOnSubscribe<String>() {
             @Override
@@ -57,6 +67,16 @@ public class ThirdActivity extends BaseActivity {
                     @Override
                     public String apply(String s) throws Exception {
                         return "This is event "+ s;
+                    }
+                })
+                .flatMap(new Function<String, ObservableSource<String>>() {
+                    @Override
+                    public ObservableSource<String> apply(String s) throws Exception {
+                        List<String> strList = new ArrayList<>();
+                        for (int i = 0; i < 3; i++) {
+                            strList.add(s + "  ----  FlatMap " + i);
+                        }
+                        return Observable.fromIterable(strList).delay(10, TimeUnit.MILLISECONDS);
                     }
                 })
                 .subscribe(new Observer<String>() {

@@ -1,5 +1,6 @@
 package cn.liusiqian.rxjavatraining;
 
+import android.content.Intent;
 import android.util.Log;
 
 import io.reactivex.Observable;
@@ -21,6 +22,8 @@ public class FourthActivity extends BaseActivity {
 
     @Override
     protected void goNext() {
+        Intent intent = new Intent(this,FifthActivity.class);
+        startActivity(intent);
     }
 
     /*

@@ -45,6 +45,10 @@ public class FifthActivity extends BaseActivity {
 
     /*
      * Flowable上游使用Flowable，下游使用Subscriber
+     *
+     * Flowable在设计的时候采用了响应式拉取的思路来更好的解决上下游流速不均衡的问题，request可以当作下游处理事件的能力，
+     * 下游能处理几个就告诉上游我要几个, 这样只要上游根据下游的处理能力来决定发送多少事件, 就不会造成一窝蜂的发出一堆事件来, 从而导致OOM
+     * 只有当上游正确的实现了如何根据下游的处理能力来发送事件的时候, 才能达到这种效果
      */
 
     @Override
@@ -52,8 +56,8 @@ public class FifthActivity extends BaseActivity {
         Flowable.create(new FlowableOnSubscribe<String>() {
             @Override
             public void subscribe(@NonNull FlowableEmitter<String> e) throws Exception {
-                Log.i(TAG, "Source 1 subscribe start");
-                Log.i(TAG, "Source 1 subscribe Thread:" + Thread.currentThread().getName());
+                Log.i(TAG, "subscribe start");
+                Log.i(TAG, "subscribe Thread:" + Thread.currentThread().getName());
                 e.onNext("Event AAA");
                 Log.i(TAG, "subscribe A");
                 e.onNext("Event BBB");
@@ -63,16 +67,23 @@ public class FifthActivity extends BaseActivity {
                 e.onNext("Event DDD");
                 Log.i(TAG, "subscribe D");
                 e.onComplete();
-                Log.i(TAG, "Source 1 Complete");
+                Log.i(TAG, "Complete");
             }
-        }, BackpressureStrategy.ERROR).subscribeOn(Schedulers.newThread())
+        }, BackpressureStrategy.ERROR)      //上下游流速不均衡的时候直接抛出异常
+                // 1、上下游处于同一线程时，如果出现事件流速不均匀时，则直接按照上面背压策略处理
+                // 2、由于在Flowable里默认有一个大小为128的缓冲区, 当上游与下游工作在不同的线程中时, 上游会先把事件发送到这个缓冲区中
+                // 因此, 下游虽然没有调用request, 但是上游在缓冲区中保存着这些事件, 只有当下游调用request时, 才会从缓冲区里取出事件发给下游。
+                .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<String>() {
 
                     @Override
                     public void onSubscribe(Subscription subscription) {
+                        //调用 subscription.cancel(); 可以直接切断上游与下游之间的联系，此时类似于 disposable.dispose();
+
                         Log.i(TAG, "onSubscribe");
                         Log.i(TAG, "onSubscribe Thread:" + Thread.currentThread().getName());
+                        subscription.request(Long.MAX_VALUE);
                     }
 
                     @Override

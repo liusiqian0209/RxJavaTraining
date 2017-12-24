@@ -1,5 +1,6 @@
 package cn.liusiqian.rxjavatraining;
 
+import android.content.Intent;
 import android.util.Log;
 
 import org.reactivestreams.Subscriber;
@@ -28,6 +29,8 @@ public class FifthActivity extends BaseActivity {
 
     @Override
     protected void goNext() {
+        Intent intent = new Intent(this,SixthActivity.class);
+        startActivity(intent);
     }
 
     /*
@@ -49,6 +52,13 @@ public class FifthActivity extends BaseActivity {
      * Flowable在设计的时候采用了响应式拉取的思路来更好的解决上下游流速不均衡的问题，request可以当作下游处理事件的能力，
      * 下游能处理几个就告诉上游我要几个, 这样只要上游根据下游的处理能力来决定发送多少事件, 就不会造成一窝蜂的发出一堆事件来, 从而导致OOM
      * 只有当上游正确的实现了如何根据下游的处理能力来发送事件的时候, 才能达到这种效果
+     */
+
+    /*
+     * BackpressureStrategy.ERROR       //上下游流速不均衡时直接抛出异常
+     * BackpressureStrategy.BUFFER      //上下游流速不均衡时，无限制缓存上游的事件，当心OOM
+     * BackpressureStrategy.DROP        //超过默认缓冲区，则上游丢弃事件
+     * BackpressureStrategy.LATEST      //与DROP相似，但总能保证取到最后最新的事件
      */
 
     @Override
@@ -106,7 +116,7 @@ public class FifthActivity extends BaseActivity {
 
     @Override
     protected CharSequence setNextText() {
-        return "To Fifth";
+        return "To Sixth";
     }
 
     @Override

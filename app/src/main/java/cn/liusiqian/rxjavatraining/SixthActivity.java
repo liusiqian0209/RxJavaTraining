@@ -71,7 +71,7 @@ public class SixthActivity extends BaseActivity
     @Override
     protected CharSequence setNextText()
     {
-        return "To Sixth";
+        return "To Seventh";
     }
 
     @Override

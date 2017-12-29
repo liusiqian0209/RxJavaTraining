@@ -21,7 +21,8 @@
         <activity android:name=".ThirdActivity"/>
         <activity android:name=".FourthActivity"/>
         <activity android:name=".FifthActivity"/>
-        <activity android:name=".SixthActivity">
+        <activity android:name=".SixthActivity"/>
+        <activity android:name=".SeventhActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

@@ -31,6 +31,18 @@ Observable.just("String").subscribeOn(Schedulers.io());
 
 
 ### Transforming Observables
+##### map
+> 将一个item 按照指定规则转换为另一个item
+##### flatMap
+> 将一个item 按照指定规则转换为多个item
+##### groupBy
+> 将多个item根据指定分组规则，分成若干个组
+##### buffer
+> 将指定个数相邻的item合并为一个item
+##### Scan
+> 类似于python中的reduce ，每次把当前运算结果再发射出去
+##### Window
+> 根据一个时间间隔，将期间的事件合并为一个Observable发射出去
 ### Filtering Observables
 ### Combing Observables
-### Eooro Handling Operators
+### Error Handling Operators

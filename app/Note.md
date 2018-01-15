@@ -43,6 +43,31 @@ Observable.just("String").subscribeOn(Schedulers.io());
 > 类似于python中的reduce ，每次把当前运算结果再发射出去
 ##### Window
 > 根据一个时间间隔，将期间的事件合并为一个Observable发射出去
+
 ### Filtering Observables
+##### debouce
+> only emit an item from an Observable if a particular timespan has passed without it emitting another item.
+##### distinct
+> 去掉重复的数据项
+##### ElementAt
+> 取出指定位置的数据
+##### filter
+> 指定过滤条件，返回true则通过
+##### first
+> 返回第一个item
+##### ignoreElements
+> 不发射数据项，只发射onComplete 和 onError
+##### last
+> 类似于first 取最后一项
+##### sample
+> 对数据源定时采样
+##### skip
+> 跳过数据源中的前n项
+##### skipLast
+> 跳过数据源中的最后n项
+##### take
+> 取出数据源中的前n项
+##### takeLast
+> 取出数据源中的最后n项
 ### Combing Observables
 ### Error Handling Operators

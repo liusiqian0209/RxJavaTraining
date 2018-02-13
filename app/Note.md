@@ -70,4 +70,18 @@ Observable.just("String").subscribeOn(Schedulers.io());
 ##### takeLast
 > 取出数据源中的最后n项
 ### Combing Observables
+##### zip
+> 多个数据源组合成一个数据源,当其中一个Observable发射数据项结束或者出现异常后，另一个Observable也将停止发射数据
+##### merge
+> 多个数据源合并成一个数据源，事件数为之前所有数据源的数目之和（不组合item）
+##### startWith
+> 在原先数据源之前插入新的item或者新的Observable
+##### combineLatest
+> 将两个数据源合成一个数据源，每当某一个数据源发射一个事件时，它总是与其他数据源最新发射的那个数据项组合成为一个新的数据项
+##### join
+> 将两个数据源合并成一个数据源，每当某一个数据源发射一个事件时，在之后的一段时间内，另一个数据源如果发射的事件都会和这个数据项合并成为一个新的数据项
+##### switchOnNext
+> 将一个发射多个Observable的数据源转换成一个单独的Observable，如果之前的Observables在发射的数据时时间上有重叠，仅保留最新的Observable发射的数据项
+
+
 ### Error Handling Operators

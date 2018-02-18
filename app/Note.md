@@ -85,3 +85,10 @@ Observable.just("String").subscribeOn(Schedulers.io());
 
 
 ### Error Handling Operators
+##### catch
+> onErrorReturn 处理onError时，返回一个数据项，之后以onComplete结束数据流
+> onErrorResumeNext 处理onError时，使用正常的数据流代替错误流
+> onExceptionResumeNext 当Error是一个Exception时，使用正常的数据流代替错误流
+##### retry
+> retry 当错误发生时，尝试跳过这个数据项，然后继续流中其他的数据项直到终止
+> retryWhen 当错误发生时，先跳过这个数据项，继续处理流中其他的数据项，在指定的延迟时间后再重新处理这个错误项

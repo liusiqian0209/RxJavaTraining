@@ -37,6 +37,7 @@ public class SecondActivity extends BaseActivity {
         Schedulers.io() 代表io操作的线程, 通常用于网络,读写文件等io密集型的操作
         Schedulers.computation() 代表CPU计算密集型的操作, 例如需要大量计算的操作
         Schedulers.newThread() 代表一个常规的新线程
+        Schedulers.trampoline() 当其它排队的任务完成后，在当前线程排队开始执行
         AndroidSchedulers.mainThread() 代表Android的主线程
      */
 
